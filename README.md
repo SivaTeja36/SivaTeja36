@@ -1,10 +1,11 @@
-# 👋 Hi, I’m @SivaTeja36
+# 👋 Hi, I’m @SivaTeja
 
 ## 👀 Interests
 I’m interested in:
 - Python development, particularly with FastAPI
 - Solving coding problems and challenges
 - Exploring and learning new technologies
+- Everything related to Python and its ecosystem
 
 ## 🌱 Current Learning
 I’m currently learning:
@@ -12,7 +13,7 @@ I’m currently learning:
 
 ## 💞️ Collaboration
 I’m looking to collaborate on:
-- Open-source projects related to Python and FastAPI
+- Open-source projects related to Python
 - Data science projects that involve real-world data applications
 - Any coding challenges or hackathons!
 
