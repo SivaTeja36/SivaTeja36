@@ -59,7 +59,7 @@ THEMES = {
 ROWS = [
     ("Subject", "V. Siva Teja"),
     ("Role", "Full Stack · Azure Cloud · AI/ML Engineer"),
-    ("Origin", "India"),
+    ("Origin", "Bengaluru, India"),
     ("Education", "B.Tech, Mechanical Engineering"),
     ("Status", "Building + Learning + Shipping"),
     ("ToolChain", "VS Code · Git · Docker · Postman · Terraform"),
