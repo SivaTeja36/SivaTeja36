@@ -9,7 +9,7 @@ from panels import (AMBER, BG2, BLUE, CARD, CARD_STROKE, CYAN, EMERALD, MONO, MU
 
 W = 1280
 GROUPS = [
-    ("LANGUAGES & FRONTEND", CYAN, [("Python", "python"), ("JavaScript", "javascript"), ("SQL", "sql"),
+    ("LANGUAGES & FRONTEND", CYAN, [("Python", "python"), ("TypeScript", "typescript"), ("JavaScript", "javascript"), ("SQL", "sql"),
                                     ("HTML5", "html5"), ("CSS", "css"), ("React", "react"),
                                     ("Streamlit", "streamlit")]),
     ("BACKEND", PURPLE, [("FastAPI", "fastapi"), ("Django", "django"), ("Flask", "flask"),
@@ -17,9 +17,9 @@ GROUPS = [
     ("CLOUD & DEVOPS", AMBER, [("Azure", "azure"), ("Terraform", "terraform"), ("Docker", "docker"),
                                ("Azure DevOps", "azure"), ("Linux", "linux"), ("Git", "git"),
                                ("GitHub", "github")]),
-    ("AI / ML", PINK, [("Scikit-learn", "scikitlearn"), ("OpenCV", "opencv"), ("LangChain", "langchain"),
+    ("AI / ML", PINK, [("Scikit-learn", "scikitlearn"), ("OpenCV", "opencv"), ("LangChain", "langchain"), ("LangGraph", "langgraph"),
                        ("Ollama", "ollama"), ("n8n", "n8n"), ("NumPy", "numpy"), ("Pandas", "pandas")]),
-    ("DATA", BLUE, [("PostgreSQL", "postgresql"), ("PgVector", "postgresql"), ("SQLite", "sqlite")]),
+    ("DATA", BLUE, [("PostgreSQL", "postgresql"), ("PgVector", "postgresql"), ("Redis", "redis"), ("SQLite", "sqlite")]),
 ]
 ORBIT_ICONS = [  # (icon, orbit index)
     ("python", 0), ("fastapi", 0), ("postgresql", 0),
