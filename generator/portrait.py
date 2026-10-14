@@ -24,7 +24,6 @@ DARK_FLOOR = 0.0
 # fade the portrait out below the jaw (fractions of height) so the head sits on the
 # panel and the collar edge does not read as the shirt cutting into the neck
 DARK_FADE_START, DARK_FADE_END, DARK_FADE_MIN = 0.70, 0.97, 0.10
-SHIRT_FLOOR = 0.07   # faint, even dot field over the shirt so both shoulders stay visible
 CLAHE_CLIP = 1.6
 PERSON_THRESHOLD = 0.35          # MediaPipe prob; ears/jaw against dark wood sit below 0.5
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
@@ -176,12 +175,6 @@ def main():
     ramp = np.clip((yy - DARK_FADE_START) / (DARK_FADE_END - DARK_FADE_START), 0, 1)
     ramp = 1 - (1 - DARK_FADE_MIN) * (3 * ramp**2 - 2 * ramp**3)   # smoothstep 1 -> FADE_MIN
     v_dark = v_dark * ramp
-    # ghost shoulders: a low uniform density on the shirt, fading toward the bottom edge
-    shirt = mask & (v < 0.35)
-    top_in = np.clip((yy - (DARK_FADE_START - 0.06)) / 0.12, 0, 1)      # soft start, no hard line
-    top_in = 3 * top_in**2 - 2 * top_in**3
-    bottom = np.clip((1 - yy) / (1 - DARK_FADE_START), 0, 1)
-    v_dark = np.where(shirt, np.maximum(v_dark, SHIRT_FLOOR * top_in * bottom), v_dark)
     dots_dark = floyd_steinberg(v_dark)
     mask_core = ndimage.binary_erosion(mask, iterations=1)
     dots_dark &= mask_core  # hard-clear bleed at the mask edge
