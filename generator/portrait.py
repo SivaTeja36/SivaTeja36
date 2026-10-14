@@ -132,6 +132,7 @@ def floyd_steinberg(v: np.ndarray) -> np.ndarray:
 
 MIRROR_BLEND = (0.76, 0.82)      # fractions of height: blend from photo to mirrored shirt
 MIRROR_AXIS_ROWS = (0.72, 0.78)  # neck rows used to find the symmetry axis
+MIRROR_CLEAR_FROM = 0.50         # from this height down, left shirt follows the right outline
 
 
 def mirror_lower(v: np.ndarray, mask: np.ndarray):
@@ -159,6 +160,15 @@ def mirror_lower(v: np.ndarray, mask: np.ndarray):
     t = 3 * t**2 - 2 * t**3
     out = v * (1 - t) + vm * t
     out_mask = np.where(t > 0.5, mm, mask)
+    # Above the collar the left shoulder rises beside the jaw while the right side
+    # is open background: clear left-side SHIRT pixels wherever the mirrored
+    # right side is background. Face/skin pixels (light) are never touched.
+    xx = np.arange(w)[None, :]
+    region = (y >= MIRROR_CLEAR_FROM) & (t < 1.0) & (xx < cx)
+    drop = region & mask & (v > 0.62) & ~mm
+    out = np.where(drop, 0.0, out)
+    out_mask = out_mask & ~drop
+    out_mask = largest_component(out_mask)
     return out, out_mask
 
 
