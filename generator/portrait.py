@@ -130,6 +130,37 @@ def floyd_steinberg(v: np.ndarray) -> np.ndarray:
                     a[y + 1, x + step] += err * 1 / 16
     return out
 
+MIRROR_BLEND = (0.76, 0.82)      # fractions of height: blend from photo to mirrored shirt
+MIRROR_AXIS_ROWS = (0.72, 0.78)  # neck rows used to find the symmetry axis
+
+
+def mirror_lower(v: np.ndarray, mask: np.ndarray):
+    """Below the collar, replace the left half with the mirror image of the right
+    half (axis = neck centre). Returns (values, mask) with a smooth blend band."""
+    h, w = v.shape
+    r0, r1 = int(MIRROR_AXIS_ROWS[0] * h), int(MIRROR_AXIS_ROWS[1] * h)
+    # axis = centre of the neck skin (bright against the dark shirt), not the mask,
+    # because the shoulders already span the full width at that height
+    skin = (mask[r0:r1] & (v[r0:r1] < 0.55))        # v is 'darkness' here: skin is light
+    cols = np.nonzero(skin.any(0))[0]
+    if len(cols):
+        runs = np.split(cols, np.where(np.diff(cols) > 1)[0] + 1)   # the lit collar is a
+        big = max(runs, key=len)                                    # separate run: ignore it
+        cx = int(round((big.min() + big.max()) / 2))
+    else:
+        cx = w // 2
+    print(f'mirror axis x={cx}')
+    src = np.clip(2 * cx - np.arange(w), 0, w - 1)          # x -> mirrored x
+    vm, mm = v[:, src], mask[:, src]
+    keep = np.arange(w) >= cx                               # right half stays as is
+    vm[:, keep], mm[:, keep] = v[:, keep], mask[:, keep]
+    y = np.linspace(0, 1, h)[:, None]
+    t = np.clip((y - MIRROR_BLEND[0]) / (MIRROR_BLEND[1] - MIRROR_BLEND[0]), 0, 1)
+    t = 3 * t**2 - 2 * t**3
+    out = v * (1 - t) + vm * t
+    out_mask = np.where(t > 0.5, mm, mask)
+    return out, out_mask
+
 
 def main():
     ap = argparse.ArgumentParser()
@@ -179,13 +210,14 @@ def main():
     mask_core = ndimage.binary_erosion(mask, iterations=1)
     dots_dark &= mask_core  # hard-clear bleed at the mask edge
 
-    # ---- light mode: dark parts of the photo
-    v_light = 1.0 - v
+    # ---- light mode: dark parts of the photo; below the collar the left side of
+    # the shirt is a mirror of the right side so both shoulders match
+    v_light, mask_light = mirror_lower(1.0 - v, mask)
     if not args.light_keep_bg:
-        v_light = np.where(mask, v_light, 0.0)
+        v_light = np.where(mask_light, v_light, 0.0)
     dots_light = floyd_steinberg(v_light)
     if not args.light_keep_bg:
-        dots_light &= mask_core
+        dots_light &= ndimage.binary_erosion(mask_light, iterations=1)
 
     for name, d in (("dark", dots_dark), ("light", dots_light)):
         np.save(os.path.join(OUT, f"portrait_{name}.npy"), d)
