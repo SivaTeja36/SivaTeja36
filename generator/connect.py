@@ -5,7 +5,7 @@ import os
 import numpy as np
 
 from banner import runs_path
-from panels import (BG2, CARD, CARD_STROKE, CYAN, EMERALD, MONO, MUTED, PINK, PURPLE, ROOT, SANS,
+from panels import (THEME, out_path, BG2, CARD, CARD_STROKE, CYAN, EMERALD, MONO, MUTED, PINK, PURPLE, ROOT, SANS,
                     TEXT, defs, esc, eyebrow, fade_in, frame, icon, icon_svg, title)
 
 W, H = 1280, 470
@@ -21,7 +21,7 @@ QUOTE = "“Build it right, ship it, then make it faster.”"
 
 
 def portrait(x, y, scale) -> str:
-    dots = np.load(os.path.join(OUT, "portrait_dark.npy"))
+    dots = np.load(os.path.join(OUT, f"portrait_{THEME}.npy"))   # lit-on-dark / dark-on-light
     ys, xs = np.nonzero(dots)
     d = runs_path(ys, xs)
     h, w = dots.shape
@@ -78,10 +78,10 @@ def build() -> str:
     parts.append(f'<text x="{x0}" y="{H - 38}" font-family="{MONO}" font-size="13" fill="{PINK}">{esc(QUOTE)}</text>')
     parts.append("</svg>")
     svg = "\n".join(parts)
-    out = os.path.join(ROOT, "connect.svg")
+    out = out_path("connect")
     with open(out, "w", encoding="utf-8", newline="\n") as f:
         f.write(svg)
-    print(f"connect.svg {W}x{H} {len(svg.encode()) / 1024:.0f} KB")
+    print(f"{os.path.basename(out)} {W}x{H} {len(svg.encode()) / 1024:.0f} KB")
     return out
 
 

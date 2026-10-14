@@ -9,19 +9,23 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ASSETS = os.path.join(HERE, "assets")
 ROOT = os.path.dirname(HERE)
 
-# palette (matches the banner)
-BG = "#0D1220"
-BG2 = "#121A2C"
-CARD = "#161D30"
-CARD_STROKE = "#273049"
-TEXT = "#E6E9F2"
-MUTED = "#8B93A7"
-CYAN = "#22D3EE"
-PURPLE = "#A78BFA"
-PINK = "#F472B6"
-EMERALD = "#34D399"
-AMBER = "#FBBF24"
-BLUE = "#60A5FA"
+# palette (matches the banner); PANEL_THEME=light renders the light variants
+THEME = os.environ.get("PANEL_THEME", "dark")
+_PALETTES = {
+    "dark": dict(BG="#0D1220", BG2="#121A2C", CARD="#161D30", CARD_STROKE="#273049", TEXT="#E6E9F2",
+                 MUTED="#8B93A7", CYAN="#22D3EE", PURPLE="#A78BFA", PINK="#F472B6", EMERALD="#34D399",
+                 AMBER="#FBBF24", BLUE="#60A5FA", GLOW="#A78BFA"),
+    "light": dict(BG="#F8FAFC", BG2="#EEF2F7", CARD="#FFFFFF", CARD_STROKE="#D7DEE8", TEXT="#0F172A",
+                  MUTED="#64748B", CYAN="#0891B2", PURPLE="#7C3AED", PINK="#DB2777", EMERALD="#059669",
+                  AMBER="#D97706", BLUE="#2563EB", GLOW="#C4B5FD"),
+}
+globals().update(_PALETTES[THEME])
+
+
+def out_path(base: str) -> str:
+    """ROOT/<base>.svg for dark, ROOT/<base>-light.svg for light."""
+    return os.path.join(ROOT, f"{base}.svg" if THEME == "dark" else f"{base}-light.svg")
+
 
 SANS = "'SG', 'Segoe UI', Helvetica, Arial, sans-serif"
 MONO = "'JBM', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace"
@@ -48,12 +52,14 @@ CUSTOM_ICONS = {
                  "24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z", "#0A66C2"),
 }
 
-# brands whose official colour is too dark for a dark panel
+# brands whose official colour does not read on the panel background
 COLOR_OVERRIDE = {
-    "flask": "#E6E9F2", "github": "#E6E9F2", "ollama": "#E6E9F2", "django": "#44B78B",
-    "pandas": "#A78BFA", "numpy": "#4DABCF", "sqlite": "#4DA8DA", "langchain": "#2DD4BF",
-    "linux": "#FCC624",
-}
+    "dark": {"flask": "#E6E9F2", "github": "#E6E9F2", "ollama": "#E6E9F2", "django": "#44B78B",
+             "pandas": "#A78BFA", "numpy": "#4DABCF", "sqlite": "#4DA8DA", "langchain": "#2DD4BF",
+             "linux": "#FCC624"},
+    "light": {"javascript": "#C9A800", "linux": "#B38600", "react": "#0E8FAF", "langgraph": "#1F7FD1",
+              "sql": "#2563EB", "globe": "#059669", "pytest": "#0A7CB3"},
+}[THEME]
 
 
 def esc(s: str) -> str:

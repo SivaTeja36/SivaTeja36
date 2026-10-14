@@ -3,7 +3,7 @@ the left, grouped tech chips on the right.  Usage: python stack.py"""
 import math
 import os
 
-from panels import (AMBER, BG2, BLUE, CARD, CARD_STROKE, CYAN, EMERALD, MONO, MUTED, PINK,
+from panels import (THEME, out_path, AMBER, BG2, BLUE, CARD, CARD_STROKE, CYAN, EMERALD, MONO, MUTED, PINK,
                     PURPLE, ROOT, SANS, TEXT, defs, esc, eyebrow, fade_in, frame, icon,
                     icon_svg, mono_width, title)
 
@@ -121,10 +121,10 @@ def build() -> str:
              f'<line x1="{X_RIGHT - 26}" y1="{Y_GROUPS - 20}" x2="{X_RIGHT - 26}" y2="{H - 36}" stroke="{CARD_STROKE}"/>',
              orbit_cluster(232, cy), right, '</svg>']
     svg = "\n".join(parts)
-    out = os.path.join(ROOT, "stack.svg")
+    out = out_path("stack")
     with open(out, "w", encoding="utf-8", newline="\n") as f:
         f.write(svg)
-    print(f"stack.svg {W}x{H} {len(svg.encode()) / 1024:.0f} KB")
+    print(f"{os.path.basename(out)} {W}x{H} {len(svg.encode()) / 1024:.0f} KB")
     return out
 
 

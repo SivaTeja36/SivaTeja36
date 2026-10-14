@@ -9,6 +9,8 @@ python logos.py logos/python.svg logos/react.svg builtin:cloud builtin:ai
 python banner.py                                           # -> ../dark.svg ../light.svg
 python stack.py                                            # -> ../stack.svg  (tech stack panel)
 python connect.py                                          # -> ../connect.svg (contact panel)
+PANEL_THEME=light python stack.py                          # -> ../stack-light.svg   (light-mode variants,
+PANEL_THEME=light python connect.py                        # -> ../connect-light.svg  picked by <picture> in README)
 ```
 
 - `inputs/photo.jpg` is git-ignored. Drop a new head-and-shoulders photo there and re-run.

@@ -16,7 +16,11 @@
 - **AI-enabled systems** — computer-vision training and deployment pipelines, RAG chatbots on PgVector, and Text-to-SQL agents built with LangChain.
 
 <!-- Tech stack: generator/stack.py -->
-<img src="https://raw.githubusercontent.com/SivaTeja36/SivaTeja36/main/stack.svg" alt="Tools I build with: Python, FastAPI, Azure, Terraform, PostgreSQL, LangChain and more" width="100%">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/SivaTeja36/SivaTeja36/main/stack.svg?v=2">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/SivaTeja36/SivaTeja36/main/stack-light.svg?v=1">
+  <img src="https://raw.githubusercontent.com/SivaTeja36/SivaTeja36/main/stack.svg?v=2" alt="Tools I build with: Python, FastAPI, Azure, Terraform, PostgreSQL, LangChain and more" width="100%">
+</picture>
 
 <!-- Stats: currently the PUBLIC github-readme-stats instance (shared, can hit "rate limit exceeded").
      After deploying your own fork on Vercel, replace github-readme-stats.vercel.app with your instance hostname. -->
@@ -45,7 +49,11 @@
 </picture>
 
 <!-- Let's connect: generator/connect.py -->
-<img src="https://raw.githubusercontent.com/SivaTeja36/SivaTeja36/main/connect.svg?v=5" alt="Let's build something together: GitHub, email, LinkedIn, portfolio" width="100%">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/SivaTeja36/SivaTeja36/main/connect.svg?v=6">
+  <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/SivaTeja36/SivaTeja36/main/connect-light.svg?v=1">
+  <img src="https://raw.githubusercontent.com/SivaTeja36/SivaTeja36/main/connect.svg?v=6" alt="Let's build something together: GitHub, email, LinkedIn, portfolio" width="100%">
+</picture>
 
 <p align="center">
   <a href="https://github.com/SivaTeja36"><img src="https://img.shields.io/badge/GitHub-22D3EE?style=for-the-badge&logo=github&logoColor=0D1220" alt="GitHub"></a>&nbsp;&nbsp;
