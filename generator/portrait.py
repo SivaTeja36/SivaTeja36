@@ -24,6 +24,9 @@ DARK_FLOOR = 0.0
 # fade the portrait out below the jaw (fractions of height) so the head sits on the
 # panel and the collar edge does not read as the shirt cutting into the neck
 DARK_FADE_START, DARK_FADE_END, DARK_FADE_MIN = 0.70, 0.97, 0.10
+LIGHT_GAIN, LIGHT_GAMMA = 0.88, 1.1    # light mode: max dot density and tone curve
+LIGHT_CUT = 0.28                        # tones lighter than this get no dots (clean skin)
+LIGHT_FADE_START, LIGHT_FADE_END = 0.68, 0.88   # shirt fades to nothing
 CLAHE_CLIP = 1.6
 PERSON_THRESHOLD = 0.35          # MediaPipe prob; ears/jaw against dark wood sit below 0.5
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
@@ -180,9 +183,14 @@ def main():
     dots_dark &= mask_core  # hard-clear bleed at the mask edge
 
     # ---- light mode: dark parts of the photo
-    v_light = 1.0 - v
+    # Cap the darkest tones so black hair / shirt stay textured instead of solid,
+    # and apply the same below-the-jaw fade as dark mode.
+    dark_t = np.clip(((1.0 - v) - LIGHT_CUT) / (1.0 - LIGHT_CUT), 0.0, 1.0)
+    v_light = LIGHT_GAIN * dark_t ** LIGHT_GAMMA
     if not args.light_keep_bg:
-        v_light = np.where(mask, v_light, 0.0)
+        lr = np.clip((yy - LIGHT_FADE_START) / (LIGHT_FADE_END - LIGHT_FADE_START), 0, 1)
+        lr = 1 - (3 * lr**2 - 2 * lr**3)
+        v_light = np.where(mask, v_light, 0.0) * lr
     dots_light = floyd_steinberg(v_light)
     if not args.light_keep_bg:
         dots_light &= mask_core
