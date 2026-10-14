@@ -20,7 +20,7 @@ from scipy import ndimage
 W, H = 300, 340
 DARK_GAIN = 0.92                 # overall density multiplier
 DARK_KNEE, DARK_KNEE_SLOPE = 0.55, 0.3   # highlights above the knee compressed
-DARK_FLOOR = 0.10
+DARK_FLOOR = 0.03
 CLAHE_CLIP = 1.6
 PERSON_THRESHOLD = 0.35          # MediaPipe prob; ears/jaw against dark wood sit below 0.5
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
