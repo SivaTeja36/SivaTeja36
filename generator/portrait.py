@@ -20,7 +20,10 @@ from scipy import ndimage
 W, H = 300, 340
 DARK_GAIN = 0.92                 # overall density multiplier
 DARK_KNEE, DARK_KNEE_SLOPE = 0.55, 0.3   # highlights above the knee compressed
-DARK_FLOOR = 0.03
+DARK_FLOOR = 0.0
+# fade the portrait out below the jaw (fractions of height) so the head sits on the
+# panel and the collar edge does not read as the shirt cutting into the neck
+DARK_FADE_START, DARK_FADE_END, DARK_FADE_MIN = 0.70, 0.97, 0.10
 CLAHE_CLIP = 1.6
 PERSON_THRESHOLD = 0.35          # MediaPipe prob; ears/jaw against dark wood sit below 0.5
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
@@ -168,6 +171,10 @@ def main():
     knee = DARK_KNEE
     v_knee = np.minimum(v, knee) + np.maximum(v - knee, 0.0) * DARK_KNEE_SLOPE
     v_dark = np.where(mask, DARK_FLOOR + (1 - DARK_FLOOR) * DARK_GAIN * v_knee, 0.0)
+    yy = np.linspace(0, 1, H)[:, None]
+    ramp = np.clip((yy - DARK_FADE_START) / (DARK_FADE_END - DARK_FADE_START), 0, 1)
+    ramp = 1 - (1 - DARK_FADE_MIN) * (3 * ramp**2 - 2 * ramp**3)   # smoothstep 1 -> FADE_MIN
+    v_dark = v_dark * ramp
     dots_dark = floyd_steinberg(v_dark)
     mask_core = ndimage.binary_erosion(mask, iterations=1)
     dots_dark &= mask_core  # hard-clear bleed at the mask edge
