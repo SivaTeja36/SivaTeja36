@@ -18,7 +18,11 @@ from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 from scipy import ndimage
 
 W, H = 300, 340
-DARK_GAIN, DARK_GAMMA = 0.62, 1.3
+DARK_GAIN = 0.92                 # overall density multiplier
+DARK_KNEE, DARK_KNEE_SLOPE = 0.55, 0.3   # highlights above the knee compressed
+DARK_FLOOR = 0.10
+CLAHE_CLIP = 1.6
+PERSON_THRESHOLD = 0.35          # MediaPipe prob; ears/jaw against dark wood sit below 0.5
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
 
 
@@ -36,21 +40,53 @@ def crop_head_shoulders(img: Image.Image, box=None) -> Image.Image:
     return img.crop(box)
 
 
-def segment_subject(rgb: np.ndarray) -> np.ndarray:
-    """GrabCut with a rectangle prior, then morphological clean-up.
+def person_probability(rgb: np.ndarray) -> np.ndarray:
+    """Per-pixel subject probability from MediaPipe selfie segmentation.
+    A learned person model, so skin against wood (ears, jaw) is not a colour
+    guess the way it is for GrabCut."""
+    import mediapipe as mp
+    with mp.solutions.selfie_segmentation.SelfieSegmentation(model_selection=0) as seg:
+        return seg.process(np.ascontiguousarray(rgb)).segmentation_mask
+
+
+def segment_subject(rgb: np.ndarray, fg_hints=()) -> np.ndarray:
+    """MediaPipe person mask, edge refined by GrabCut, then morphological clean-up.
+    fg_hints: ellipses (cx, cy, rx, ry) in this image's pixels that are certainly
+    subject -- used for parts the model drops (ears in shadow against dark wood).
     Returns bool mask (True = subject)."""
     h, w = rgb.shape[:2]
+    prob = person_probability(rgb)
+    m = largest_component(prob > PERSON_THRESHOLD)
+    hint = np.zeros((h, w), bool)
+    yy, xx = np.mgrid[:h, :w]
+    for cx, cy, rx, ry in fg_hints:
+        hint |= ((xx - cx) / rx) ** 2 + ((yy - cy) / ry) ** 2 <= 1.0
+    m |= hint
+
+    # Refine the edge with GrabCut: trust the model deep inside / far outside,
+    # let the colour model re-decide only a thin band around the boundary.
     bgr = cv2.cvtColor(rgb, cv2.COLOR_RGB2BGR)
-    mask = np.zeros((h, w), np.uint8)
-    # Prior: subject occupies the middle, touches the bottom edge, not the top corners.
-    rect = (int(w * 0.08), int(h * 0.02), int(w * 0.84), int(h * 0.98))
+    band = int(0.012 * w)
+    mask = np.full((h, w), cv2.GC_PR_BGD, np.uint8)
+    mask[ndimage.binary_dilation(m, iterations=band)] = cv2.GC_PR_BGD
+    mask[m] = cv2.GC_PR_FGD
+    mask[ndimage.binary_erosion(m, iterations=band)] = cv2.GC_FGD
+    mask[~ndimage.binary_dilation(m, iterations=band)] = cv2.GC_BGD
+    mask[hint] = cv2.GC_FGD
     bgd = np.zeros((1, 65), np.float64)
     fgd = np.zeros((1, 65), np.float64)
-    cv2.grabCut(bgr, mask, rect, bgd, fgd, 8, cv2.GC_INIT_WITH_RECT)
-    # Nudge: top-left / top-right corners are certainly background.
-    m = np.where((mask == cv2.GC_FGD) | (mask == cv2.GC_PR_FGD), True, False)
-    m = ndimage.binary_closing(m, structure=np.ones((7, 7)), iterations=2)
+    cv2.grabCut(bgr, mask, None, bgd, fgd, 5, cv2.GC_INIT_WITH_MASK)
+    m = (mask == cv2.GC_FGD) | (mask == cv2.GC_PR_FGD) | hint
+
+    m = ndimage.binary_closing(m, structure=np.ones((5, 5)), iterations=2)
     m = ndimage.binary_fill_holes(m)
+    m = largest_component(m)
+    # Smooth the stair-stepped edge: blur the mask and re-threshold.
+    sm = ndimage.gaussian_filter(m.astype(float), sigma=max(1.0, w / 300))
+    return sm > 0.5
+
+
+def largest_component(m: np.ndarray) -> np.ndarray:
     lab, n = ndimage.label(m)
     if n > 1:
         sizes = ndimage.sum(m, lab, range(1, n + 1))
@@ -59,8 +95,10 @@ def segment_subject(rgb: np.ndarray) -> np.ndarray:
 
 
 def tone(gray: Image.Image) -> np.ndarray:
-    """autocontrast(cutoff=1) -> contrast 1.3x -> UnsharpMask(3, 140). Returns float 0..1."""
-    g = ImageOps.autocontrast(gray, cutoff=1)
+    """CLAHE (mild) -> autocontrast(cutoff=1) -> contrast 1.3x -> UnsharpMask(3, 140). Returns float 0..1."""
+    clahe = cv2.createCLAHE(clipLimit=CLAHE_CLIP, tileGridSize=(8, 8))
+    g = Image.fromarray(clahe.apply(np.asarray(gray)))
+    g = ImageOps.autocontrast(g, cutoff=1)
     g = ImageEnhance.Contrast(g).enhance(1.3)
     g = g.filter(ImageFilter.UnsharpMask(radius=3, percent=140, threshold=2))
     return np.asarray(g, dtype=np.float64) / 255.0
@@ -96,6 +134,9 @@ def main():
     ap.add_argument("--crop", nargs=4, type=int, metavar=("X0", "Y0", "X1", "Y1"))
     ap.add_argument("--light-keep-bg", action="store_true",
                     help="light mode keeps the photo background (prompt default)")
+    ap.add_argument("--fg", action="append", nargs=4, type=float, default=[],
+                    metavar=("CX", "CY", "RX", "RY"),
+                    help="ellipse in CROP pixels that is certainly subject (repeatable)")
     args = ap.parse_args()
     os.makedirs(OUT, exist_ok=True)
 
@@ -104,10 +145,12 @@ def main():
     img = crop_head_shoulders(img, tuple(args.crop) if args.crop else None)
     print("crop size", img.size)
 
-    # Segment at ~600px wide for GrabCut accuracy, then downsample.
-    seg_w = 600
+    # Segment at ~800px wide for GrabCut accuracy, then downsample.
+    seg_w = 800
     seg = img.resize((seg_w, int(seg_w * H / W)), Image.LANCZOS)
-    mask_hi = segment_subject(np.asarray(seg))
+    f = seg_w / img.size[0]
+    hints = [(cx * f, cy * f, rx * f, ry * f) for cx, cy, rx, ry in args.fg]
+    mask_hi = segment_subject(np.asarray(seg), hints)
     mask = np.asarray(Image.fromarray(mask_hi.astype(np.uint8) * 255)
                       .resize((W, H), Image.LANCZOS)) > 127
     print("subject coverage %.1f%%" % (100 * mask.mean()))
@@ -117,8 +160,14 @@ def main():
 
     # ---- dark mode: lit subject on panel; background hard-black so no error bleed
     v = tone(gray)
-    # Compress highlights: a white shirt at full density becomes a solid slab.
-    v_dark = np.where(mask, DARK_GAIN * v ** DARK_GAMMA, 0.0)
+    # Compress highlights (a white shirt at full density becomes a solid slab)
+    # and add a density floor inside the subject so black hair and shadowed
+    # ears still trace the head silhouette instead of vanishing into the panel.
+    # Soft knee: skin mid-tones keep their density, only highlights above the
+    # knee are compressed, so the face stays denser than a gamma curve allows.
+    knee = DARK_KNEE
+    v_knee = np.minimum(v, knee) + np.maximum(v - knee, 0.0) * DARK_KNEE_SLOPE
+    v_dark = np.where(mask, DARK_FLOOR + (1 - DARK_FLOOR) * DARK_GAIN * v_knee, 0.0)
     dots_dark = floyd_steinberg(v_dark)
     mask_core = ndimage.binary_erosion(mask, iterations=1)
     dots_dark &= mask_core  # hard-clear bleed at the mask edge
