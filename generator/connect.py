@@ -14,7 +14,7 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "out")
 CARDS = [  # (icon, colour, title, subtitle, href)
     ("github", TEXT, "GitHub", "SivaTeja36", "https://github.com/SivaTeja36"),
     ("gmail", "#EA4335", "Email", "vantasivateja@gmail.com", "mailto:vantasivateja@gmail.com"),
-    ("linkedin", "#0A66C2", "LinkedIn", "in/siva-teja", "https://www.linkedin.com/in/siva-teja"),
+    ("linkedin", "#0A66C2", "LinkedIn", "in/siva-teja-vanta-99213b257", "https://www.linkedin.com/in/siva-teja-vanta-99213b257/"),
     ("globe", EMERALD, "Portfolio", "coming soon", None),
 ]
 QUOTE = "“Build it right, ship it, then make it faster.”"
