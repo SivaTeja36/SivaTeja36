@@ -1,0 +1,4 @@
+.claude/
+generator/inputs/
+generator/__pycache__/
+preview.html
