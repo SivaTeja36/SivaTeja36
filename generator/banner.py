@@ -71,7 +71,7 @@ ROWS = [
     ("Core.Infra", "Azure · Terraform · Docker · Azure DevOps"),
     None,
     ("Grid.Mail", "vantasivateja@gmail.com"),
-    ("Grid.Portfolio", "coming soon"),
+    ("Grid.Portfolio", "sivateja36.github.io"),
     ("Grid.LinkedIn", "linkedin.com/in/siva-teja-vanta-99213b257"),
     ("Grid.GitHub", "github.com/SivaTeja36"),
 ]
