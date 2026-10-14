@@ -3,7 +3,8 @@
 Each logo becomes out/logo_<name>.npy, shape (N, 2), in portrait coordinates
 (the 300x340 dot grid), centred at LOGO_CENTRE and scaled to LOGO_SIZE.
 
-Usage: python logos.py logos/python.svg logos/fastapi.svg logos/terraform.svg
+Usage: python logos.py logos/python.svg logos/react.svg builtin:cloud builtin:ai
+(builtin:<name> draws a shape in code instead of tracing an SVG: cloud, ai)
 """
 import os
 import re
@@ -11,7 +12,7 @@ import sys
 import xml.etree.ElementTree as ET
 
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from scipy.spatial import cKDTree
 from svgpathtools import parse_path
 
@@ -47,6 +48,39 @@ def raster_mask(svg_file: str) -> np.ndarray:
     return acc
 
 
+def builtin_mask(name: str) -> np.ndarray:
+    """Shapes we draw ourselves instead of tracing an SVG."""
+    im = Image.new("L", (RASTER, RASTER), 0)
+    d = ImageDraw.Draw(im)
+    if name == "cloud":
+        # overlapping lobes on a flat base = classic cloud silhouette
+        for cx, cy, r in ((240, 215, 100), (140, 262, 72), (345, 250, 84), (205, 275, 70)):
+            d.ellipse([cx - r, cy - r, cx + r, cy + r], fill=255)
+        d.rounded_rectangle([75, 255, 425, 340], radius=42, fill=255)
+    elif name == "ai":
+        # rounded chip frame with a bold "AI" wordmark inside
+        d.rounded_rectangle([60, 60, 420, 420], radius=48, fill=255)
+        d.rounded_rectangle([84, 84, 396, 396], radius=34, fill=0)
+        for p in (150, 240, 330):                       # chip pins
+            d.rectangle([p - 12, 20, p + 12, 60], fill=255)
+            d.rectangle([p - 12, 420, p + 12, 460], fill=255)
+            d.rectangle([20, p - 12, 60, p + 12], fill=255)
+            d.rectangle([420, p - 12, 460, p + 12], fill=255)
+        font = None
+        for f in ("C:/Windows/Fonts/ariblk.ttf", "C:/Windows/Fonts/arialbd.ttf", "C:/Windows/Fonts/segoeuib.ttf"):
+            if os.path.exists(f):
+                font = ImageFont.truetype(f, 190)
+                break
+        if font is None:
+            raise SystemExit("no bold TTF font found for the AI wordmark")
+        bbox = d.textbbox((0, 0), "AI", font=font)
+        tw, th = bbox[2] - bbox[0], bbox[3] - bbox[1]
+        d.text(((RASTER - tw) / 2 - bbox[0], (RASTER - th) / 2 - bbox[1]), "AI", font=font, fill=255)
+    else:
+        raise SystemExit(f"unknown builtin shape {name}")
+    return np.asarray(im) > 127
+
+
 def spread_points(mask: np.ndarray, n: int, seed: int = 7, iters: int = 25) -> np.ndarray:
     """Pick n points from the mask, then Lloyd-relax them so spacing is even."""
     ys, xs = np.nonzero(mask)
@@ -78,8 +112,12 @@ def to_portrait(pts: np.ndarray, mask: np.ndarray) -> np.ndarray:
 def main(files):
     os.makedirs(OUT, exist_ok=True)
     for f in files:
-        name = os.path.splitext(os.path.basename(f))[0]
-        m = raster_mask(f)
+        if f.startswith("builtin:"):
+            name = f[len("builtin:"):]
+            m = builtin_mask(name)
+        else:
+            name = os.path.splitext(os.path.basename(f))[0]
+            m = raster_mask(f)
         pts = spread_points(m, N_DOTS)
         pp = to_portrait(pts, m)
         np.save(os.path.join(OUT, f"logo_{name}.npy"), pp)

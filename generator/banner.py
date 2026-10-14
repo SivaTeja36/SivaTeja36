@@ -26,7 +26,7 @@ ROOT = os.path.dirname(HERE)
 PW, PH = 300, 340               # portrait grid
 SCALE = 1.4
 WIDTH, HEIGHT = 1180, 610
-LOGOS = ["python", "react", "azure", "ai"]
+LOGOS = ["python", "react", "cloud", "ai"]
 
 # ----- timing -------------------------------------------------------------
 INTRO_DUR = 3.2

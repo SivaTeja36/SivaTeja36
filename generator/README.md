@@ -5,7 +5,7 @@ Source of truth for `dark.svg` / `light.svg`. Edit the scripts, regenerate, comm
 ```bash
 python -m venv .venv && .venv/Scripts/pip install -r requirements.txt
 python portrait.py inputs/photo.jpg --crop 160 0 619 520   # -> out/portrait_*.npy
-python logos.py logos/python.svg logos/fastapi.svg logos/terraform.svg
+python logos.py logos/python.svg logos/react.svg builtin:cloud builtin:ai
 python banner.py                                           # -> ../dark.svg ../light.svg
 python stack.py                                            # -> ../stack.svg  (tech stack panel)
 python connect.py                                          # -> ../connect.svg (contact panel)
