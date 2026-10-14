@@ -1,4 +1,5 @@
 .claude/
-generator/inputs/
 generator/__pycache__/
+generator/inputs/
 preview.html
+preview2.html

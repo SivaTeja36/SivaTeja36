@@ -11,6 +11,9 @@
 - **Azure infrastructure as code** — Container Apps, API Management, Front Door, Static Web Apps, Functions and Private Endpoints, all provisioned with Terraform.
 - **AI-enabled systems** — computer-vision training and deployment pipelines, RAG chatbots on PgVector, and Text-to-SQL agents built with LangChain.
 
+<!-- Tech stack: generator/stack.py -->
+<img src="https://raw.githubusercontent.com/SivaTeja36/SivaTeja36/main/stack.svg" alt="Tools I build with: Python, FastAPI, Azure, Terraform, PostgreSQL, LangChain and more" width="100%">
+
 <!-- Stats: currently the PUBLIC github-readme-stats instance (shared, can hit "rate limit exceeded").
      After deploying your own fork on Vercel, replace github-readme-stats.vercel.app with your instance hostname. -->
 <picture>
@@ -37,8 +40,16 @@
   <img alt="Contribution snake" src="https://raw.githubusercontent.com/SivaTeja36/SivaTeja36/output/github-snake-dark.svg" width="100%">
 </picture>
 
+<!-- Let's connect: generator/connect.py -->
+<img src="https://raw.githubusercontent.com/SivaTeja36/SivaTeja36/main/connect.svg" alt="Let's build something together: GitHub, email, LinkedIn, portfolio" width="100%">
+
 <p align="center">
+  <a href="https://github.com/SivaTeja36"><img src="https://img.shields.io/badge/GitHub-22D3EE?style=for-the-badge&logo=github&logoColor=0D1220" alt="GitHub"></a>&nbsp;&nbsp;
+  <a href="mailto:vantasivateja@gmail.com"><img src="https://img.shields.io/badge/Email-F472B6?style=for-the-badge&logo=gmail&logoColor=0D1220" alt="Email"></a>&nbsp;&nbsp;
   <a href="https://www.linkedin.com/in/siva-teja"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>&nbsp;&nbsp;
-  <a href="mailto:vantasivateja@gmail.com"><img src="https://img.shields.io/badge/Gmail-0A101F?style=for-the-badge&logo=gmail&logoColor=white" alt="Email"></a>&nbsp;&nbsp;
-  <a href="https://github.com/SivaTeja36/SivaTeja36/tree/main/generator"><img src="https://img.shields.io/badge/Banner%20source-0A101F?style=for-the-badge&logo=python&logoColor=white" alt="Banner generator"></a>
+  <a href="https://github.com/SivaTeja36/SivaTeja36/tree/main/generator"><img src="https://img.shields.io/badge/Banner%20source-A78BFA?style=for-the-badge&logo=python&logoColor=0D1220" alt="Banner generator"></a>
+</p>
+
+<p align="center">
+  <img src="https://komarev.com/ghpvc/?username=SivaTeja36&color=A78BFA&style=for-the-badge&label=PROFILE+VIEWS" alt="Profile views">
 </p>
