@@ -49,7 +49,3 @@
   <a href="https://www.linkedin.com/in/siva-teja"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"></a>&nbsp;&nbsp;
   <a href="https://github.com/SivaTeja36/SivaTeja36/tree/main/generator"><img src="https://img.shields.io/badge/Banner%20source-A78BFA?style=for-the-badge&logo=python&logoColor=0D1220" alt="Banner generator"></a>
 </p>
-
-<p align="center">
-  <img src="https://komarev.com/ghpvc/?username=SivaTeja36&color=A78BFA&style=for-the-badge&label=PROFILE+VIEWS" alt="Profile views">
-</p>
