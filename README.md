@@ -11,7 +11,8 @@
 - **Azure infrastructure as code** — Container Apps, API Management, Front Door, Static Web Apps, Functions and Private Endpoints, all provisioned with Terraform.
 - **AI-enabled systems** — computer-vision training and deployment pipelines, RAG chatbots on PgVector, and Text-to-SQL agents built with LangChain.
 
-<!-- Stats: self-hosted github-readme-stats on Vercel. Replace YOUR-VERCEL-APP with your instance. -->
+<!-- Stats: currently the PUBLIC github-readme-stats instance (shared, can hit "rate limit exceeded").
+     After deploying your own fork on Vercel, replace github-readme-stats.vercel.app with your instance hostname. -->
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://streak-stats.demolab.com/?user=SivaTeja36&hide_border=true&background=0A101F&stroke=22D3EE&ring=A78BFA&fire=10B981&currStreakNum=E2E8F0&sideNums=E2E8F0&currStreakLabel=22D3EE&sideLabels=22D3EE&dates=64748B">
   <source media="(prefers-color-scheme: light)" srcset="https://streak-stats.demolab.com/?user=SivaTeja36&hide_border=true&background=F8FAFC&stroke=0891B2&ring=7C3AED&fire=059669&currStreakNum=0F172A&sideNums=0F172A&currStreakLabel=0891B2&sideLabels=0891B2&dates=64748B">
@@ -19,14 +20,14 @@
 </picture>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://YOUR-VERCEL-APP.vercel.app/api?username=SivaTeja36&show_icons=true&hide_rank=true&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0&icon_color=10B981">
-  <source media="(prefers-color-scheme: light)" srcset="https://YOUR-VERCEL-APP.vercel.app/api?username=SivaTeja36&show_icons=true&hide_rank=true&hide_border=true&bg_color=F8FAFC&title_color=0891B2&text_color=0F172A&icon_color=059669">
-  <img alt="GitHub stats" src="https://YOUR-VERCEL-APP.vercel.app/api?username=SivaTeja36&show_icons=true&hide_rank=true&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0&icon_color=10B981" width="49%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api?username=SivaTeja36&show_icons=true&hide_rank=true&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0&icon_color=10B981">
+  <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api?username=SivaTeja36&show_icons=true&hide_rank=true&hide_border=true&bg_color=F8FAFC&title_color=0891B2&text_color=0F172A&icon_color=059669">
+  <img alt="GitHub stats" src="https://github-readme-stats.vercel.app/api?username=SivaTeja36&show_icons=true&hide_rank=true&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0&icon_color=10B981" width="49%">
 </picture>
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://YOUR-VERCEL-APP.vercel.app/api/top-langs/?username=SivaTeja36&layout=compact&langs_count=8&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0">
-  <source media="(prefers-color-scheme: light)" srcset="https://YOUR-VERCEL-APP.vercel.app/api/top-langs/?username=SivaTeja36&layout=compact&langs_count=8&hide_border=true&bg_color=F8FAFC&title_color=0891B2&text_color=0F172A">
-  <img alt="Top languages" src="https://YOUR-VERCEL-APP.vercel.app/api/top-langs/?username=SivaTeja36&layout=compact&langs_count=8&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0" width="49%">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=SivaTeja36&layout=compact&langs_count=8&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0">
+  <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=SivaTeja36&layout=compact&langs_count=8&hide_border=true&bg_color=F8FAFC&title_color=0891B2&text_color=0F172A">
+  <img alt="Top languages" src="https://github-readme-stats.vercel.app/api/top-langs/?username=SivaTeja36&layout=compact&langs_count=8&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0" width="49%">
 </picture>
 
 <!-- Snake: add this block only after the "Generate contribution snake" Action has run green once (the output branch does not exist before then). -->
