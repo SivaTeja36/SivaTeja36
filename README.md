@@ -23,14 +23,14 @@
 </picture>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api?username=SivaTeja36&show_icons=true&hide_rank=true&card_width=495&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0&icon_color=10B981">
-  <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api?username=SivaTeja36&show_icons=true&hide_rank=true&card_width=495&hide_border=true&bg_color=F8FAFC&title_color=0891B2&text_color=0F172A&icon_color=059669">
-  <img alt="GitHub stats" src="https://github-readme-stats.vercel.app/api?username=SivaTeja36&show_icons=true&hide_rank=true&card_width=495&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0&icon_color=10B981">
+  <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api?username=SivaTeja36&show_icons=true&hide_rank=true&include_all_commits=true&card_width=495&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0&icon_color=10B981">
+  <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api?username=SivaTeja36&show_icons=true&hide_rank=true&include_all_commits=true&card_width=495&hide_border=true&bg_color=F8FAFC&title_color=0891B2&text_color=0F172A&icon_color=059669">
+  <img alt="GitHub stats" src="https://github-readme-stats.vercel.app/api?username=SivaTeja36&show_icons=true&hide_rank=true&include_all_commits=true&card_width=495&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0&icon_color=10B981" width="49%">
 </picture>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=SivaTeja36&layout=compact&langs_count=8&card_width=495&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0">
   <source media="(prefers-color-scheme: light)" srcset="https://github-readme-stats.vercel.app/api/top-langs/?username=SivaTeja36&layout=compact&langs_count=8&card_width=495&hide_border=true&bg_color=F8FAFC&title_color=0891B2&text_color=0F172A">
-  <img alt="Top languages" src="https://github-readme-stats.vercel.app/api/top-langs/?username=SivaTeja36&layout=compact&langs_count=8&card_width=495&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0">
+  <img alt="Top languages" src="https://github-readme-stats.vercel.app/api/top-langs/?username=SivaTeja36&layout=compact&langs_count=8&card_width=495&hide_border=true&bg_color=0A101F&title_color=22D3EE&text_color=E2E8F0" width="49%">
 </picture>
 
 <!-- Snake: add this block only after the "Generate contribution snake" Action has run green once (the output branch does not exist before then). -->
