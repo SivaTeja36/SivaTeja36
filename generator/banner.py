@@ -26,16 +26,21 @@ ROOT = os.path.dirname(HERE)
 PW, PH = 300, 340               # portrait grid
 SCALE = 1.4
 WIDTH, HEIGHT = 1180, 610
-LOGOS = ["python", "fastapi", "terraform"]
+LOGOS = ["python", "react", "azure", "ai"]
 
 # ----- timing -------------------------------------------------------------
 INTRO_DUR = 3.2
 INTRO_GROUPS = 60
 INTRO_SPREAD = 2.0
 INTRO_FADE = 0.9
-LOOP = 14.2
-TIMES = [0.0, 3.0, 4.3, 6.3, 7.6, 9.6, 10.9, 12.9, 14.2]
-KEYTIMES = ";".join("1" if t == LOOP else f"{t / LOOP:.4f}" for t in TIMES)
+PORTRAIT_HOLD, LOGO_HOLD, TRANSITION = 3.0, 2.0, 1.3
+TIMES = [0.0, PORTRAIT_HOLD]
+for _ in LOGOS:                                   # -> formed, hold end, per logo
+    TIMES += [TIMES[-1] + TRANSITION, TIMES[-1] + TRANSITION + LOGO_HOLD]
+TIMES.append(TIMES[-1] + TRANSITION)              # return to portrait
+LOOP = round(TIMES[-1], 2)
+N_KEYS = len(TIMES)                               # 2N + 3
+KEYTIMES = ";".join("1" if t == TIMES[-1] else f"{t / LOOP:.4f}" for t in TIMES)
 EASE = ";".join(["0.42 0 0.58 1"] * (len(TIMES) - 1))
 
 DRIFT = 0.42
@@ -261,7 +266,7 @@ def build(theme: str) -> dict:
     band, vec = drift_bands(ys, xs, centroid, rng)
     sb = straight_boundary(band, ys, xs)
     sb_grid = straight_boundary(drift_bands(ys, xs, centroid, rng, sigma=0.0)[0], ys, xs)
-    op_vals = "1;1;0;0;0;0;0;0;1"
+    op_vals = ";".join(["1", "1"] + ["0"] * (N_KEYS - 3) + ["1"])
     loop = [f'<g id="portrait" opacity="0" fill="{t["portrait"]}" shape-rendering="crispEdges">',
             f'<set attributeName="opacity" to="1" begin="{INTRO_DUR}s" fill="freeze"/>',
             f'<g><animate attributeName="opacity" values="{op_vals}" keyTimes="{KEYTIMES}" '
@@ -270,23 +275,26 @@ def build(theme: str) -> dict:
         sel = band == b
         dx, dy = vec[b]
         mv = f"{dx:.1f} {dy:.1f}"
-        tv = ";".join(["0 0", "0 0"] + [mv] * 6 + ["0 0"])
+        tv = ";".join(["0 0", "0 0"] + [mv] * (N_KEYS - 3) + ["0 0"])
         loop.append(f'<g><animateTransform attributeName="transform" type="translate" values="{tv}" '
                     f'keyTimes="{KEYTIMES}" calcMode="spline" keySplines="{EASE}" dur="{LOOP}s" '
                     f'begin="{INTRO_DUR}s" repeatCount="indefinite"/><path d="{runs_path(ys[sel], xs[sel])}"/></g>')
     loop.append("</g></g>")
 
     # --- loop layer B: travellers
-    L1, L2, L3 = logos
-    p12 = match(L1, L2)
-    p23 = match(L2, L3)
+    # chain optimal-transport matchings: traveller i visits logos[0][i] -> logos[1][idx] -> ...
+    idx = np.arange(len(logos[0]))
+    stops = [logos[0]]
+    for a, b in zip(logos, logos[1:]):
+        idx = match(a, b)[idx]
+        stops.append(b[idx])
+    trav_op = ";".join(["0", "0"] + ["1"] * (N_KEYS - 3) + ["0"])
     trav = [f'<g id="travellers" opacity="0" fill="{t["portrait"]}">',
-            f'<animate attributeName="opacity" values="0;0;1;1;1;1;1;1;0" keyTimes="{KEYTIMES}" '
+            f'<animate attributeName="opacity" values="{trav_op}" keyTimes="{KEYTIMES}" '
             f'dur="{LOOP}s" begin="{INTRO_DUR}s" repeatCount="indefinite"/>']
-    for i in range(len(L1)):
-        a, b, c = L1[i], L2[p12[i]], L3[p23[p12[i]]]
-        pa, pb, pc = (f"{a[0]:.1f} {a[1]:.1f}", f"{b[0]:.1f} {b[1]:.1f}", f"{c[0]:.1f} {c[1]:.1f}")
-        tv = ";".join([pa, pa, pa, pa, pb, pb, pc, pc, pa])
+    for i in range(len(logos[0])):
+        pts = [f"{s[i][0]:.1f} {s[i][1]:.1f}" for s in stops]
+        tv = ";".join([pts[0]] * 4 + [p for p in pts[1:] for _ in (0, 1)] + [pts[0]])
         trav.append(f'<rect x="-1" y="-1" width="2" height="2"><animateTransform attributeName="transform" '
                     f'type="translate" values="{tv}" keyTimes="{KEYTIMES}" dur="{LOOP}s" '
                     f'begin="{INTRO_DUR}s" repeatCount="indefinite"/></rect>')
